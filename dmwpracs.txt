@@ -1,0 +1,338 @@
+
+Prac 11)Write a program integrate data from multiple source by merging dataset using python pandas library file
+
+import pandas as pd
+data1 = { 'ID':[1,2,3,4],
+          'Name':['Rupali','Bavesh','Kunal','Ravi'],
+          'Score1':[85,90,45,61]
+        }
+data2 = { 'ID':[1,2,3,5],
+    'Score2':[88,76,89,95]
+         }
+df1=pd.DataFrame(data1)
+df2=pd.DataFrame(data2)
+
+merged_df = pd.merge(df1,df2,on='ID',how='inner')
+merged_df.fillna(0,inplace=True)
+merged_df['Total Score']=merged_df['Score1']+merged_df['Score2']
+print(merged_df)
+
+
+
+
+Prac 12) Write a program integrate data from multiple source by transforming dataset using python pandas library file
+
+import pandas as pd 
+dataset1 = pd.read_csv("E:\\TYCS\\SEM 6\\data1.csv")
+dataset2 = pd.read_csv("E:\\TYCS\\SEM 6\\data2.csv")
+merged_dataset=pd.merge(dataset1,dataset2,on='ID',how='inner')
+print("Merged Dataset:")
+print(merged_dataset)
+merged_dataset.to_csv("E:\\TYCS\\SEM 6\\data3.csv",index=False)
+print("Merged dataset saved to 'data3'")
+
+
+
+
+
+Prac 13) Write a program integrate data from manipulation technique dataset using python pandas library file
+
+#Manipulation
+
+import pandas as pd 
+data1 = {
+    'ID':[1,2,3,4],
+    'Name':['Rupali','Bhavesh','Kunal','Ravi'],
+    'Age':[25,20,15,32]
+}
+
+data2 = {
+    'ID':[2,4,5,6],
+    'Salary':[8800,7600,8900,9500]
+}
+
+df1 = pd.DataFrame(data1)
+df2 = pd.DataFrame(data2)
+print("Dataset1:"),print(df1),print("/n")
+print("Dataset2:"),print(df2),print("/n")
+merged_df = pd.merge(df1,df2,on="ID",how="inner")
+print("Merged Dataset:")
+print(merged_df)
+
+
+
+
+
+Prac 21) Write a program varience Threshold using Python's scikit-learn library to reduce dimensionality in a dataset
+
+from sklearn.feature_selection import VarianceThreshold
+import numpy as np
+data = np.array([[5,1,4],[7,3,1],[4,5,2],[6,2,2],[2,0,2]])
+threshold=0.2
+selector=VarianceThreshold(threshold)
+selected_data=selector.fit_transform(data)
+print("Original Dataset:")
+print(data)
+print("\nReduced Dataset:")
+print(selected_data)
+
+
+
+
+
+Prac 22) Write a program correlation analysis using Python's scikit-learn library to reduce dimensionality in a dataset
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import make_classification
+
+np.random.seed=42
+x,_=make_classification(n_samples=100,n_features=10,n_informative=5,n_redundant=2,random_state=42)
+df=pd.DataFrame(x,columns=[f"(features_{i}"for i in range(x.shape[1])])
+plt.figure(figsize=(10,8))
+correlation_matrix=df.corr()
+plt.imshow(correlation_matrix,cmap='viridis',interpolation='none',aspect='auto')
+plt.colorbar()
+plt.xticks(range(len(correlation_matrix)),correlation_matrix.columns,rotation=90)
+plt.yticks(range(len(correlation_matrix)),correlation_matrix.columns)
+plt.show()
+                           
+
+
+
+
+
+Prac 3: Discretized continuous variables and create concept hierarchies for categorical variables in a market basket dataset using Python's pandas library.
+
+
+import pandas as pd
+data={
+    'TransactionID':[1,2,3,4,5],
+    'Product':['Milk','Bread','Butter','Eggs','Chees'],
+    'Price':[2.5,3.0,2.2,2.8,4.5],
+    'Category':['Dairy','Backery','Dairy','Dairy','Dairy']
+}
+
+df=pd.DataFrame(data)
+bins=[0,3,4,float('inf')]
+labels=['low','medium','high']
+df['Price_Category']=pd.cut(df['Price'],bins=bins,labels=labels)
+df['Category']=df['Category'].str.upper()
+print("Dataset with Discretized Continuous Variables and modified Categorical Variable")
+print(df)
+
+
+
+
+
+
+Prac 4 : Implement the Apriori algorithm in Python to mine frequent itemset from a retail transaction dataset and extract association rules
+
+!pip install mlxtend
+import pandas as pd
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori,association_rules
+dataset=[
+    ['bread','milk','butter'],
+    ['bread','milk'],
+    ['bread','butter'],
+    ['milk','butter'],
+    ['bread','milk','butter','cheese'],
+    ['bread','milk','cheese'],
+]
+
+te=TransactionEncoder()
+te_ary=te.fit(dataset).transform(dataset)
+df=pd.DataFrame(te_ary,columns=te.columns_)
+frequent_itemsets=apriori(df,min_support=0.2,use_colnames=True)
+rules=association_rules(frequent_itemsets,metric="confidence",min_threshold=0.7)
+print("Frequent Itemset:")
+print(frequent_itemsets)
+print(rules)
+
+
+
+
+
+
+
+Prac 5: Implement a Naive Bayes classifier in python using scikit-learn to classify emails as spam or non-spam based on their content
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+emails = [
+    {'text':'Buy now, limited offer!', 'label': 'spam'},
+    {'text': 'Meeting tomorrow at 2 PM', 'label': 'non-spam'},
+]
+
+texts = [email['text'] for email in emails]
+labels = [email['label'] for email in emails]
+
+texts_train, texts_test, labels_train, labels_test = train_test_split(texts,labels,test_size=0.2,random_state=42)
+vectorizer=CountVectorizer()
+x_train=vectorizer.fit_transform(texts_train)
+x_test=vectorizer.transform(texts_test)
+
+classifier = MultinomialNB()
+classifier.fit(x_train,labels_train)
+
+predictions = classifier.predict(x_test)
+accuracy = accuracy_score(labels_test, predictions)
+classification_report_output = classification_report(labels_test,predictions)
+print(f'Accuracy:{accuracy:.2f}')
+print('Classification Report:\n',classification_report_output)
+
+
+
+
+
+
+
+
+
+Prac 6: Implement a linear regression method to make predictions based on the sample data set using python
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+x = 2 * np.random.rand(100,1)
+y = 4 + 3 * x + np.random.randn(100,1)
+
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.2, random_state=42)
+linear_reg = LinearRegression()
+linear_reg.fit(x_train,y_train)
+y_pred=linear_reg.predict(x_test)
+mse = mean_squared_error(y_test,y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f'Mean Squared Error:{mse:.2f}')
+print(f'R-squared Score: {r2:.2f}')
+plt.scatter(x_test,y_test,color='black')
+plt.plot(x_test,y_pred,color='blue',linewidth=3)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Linear Regression')
+plt.show()
+
+
+
+
+
+
+
+
+Prac 7: Implement a logistic regression method to make predictions based on the sample data set using python
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix,classification_report
+import matplotlib.pyplot as plt
+
+np.random.seed(42                                            
+x = 2 * np.random.rand(100,1)
+y = (4 + 3 * x + np.random.randn(100,1)) > 5
+
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.2, random_state=42)
+logistic_reg = LogisticRegression()
+logistic_reg.fit(x_train,y_train)
+y_pred=logistic_reg.predict(x_test)
+accuracy = accuracy_score(y_test,y_pred)
+conf_matrix = confusion_matrix(y_test,y_pred)
+classification_report_output=classification_report(y_test,y_pred)
+print(f'Accuracy: {accuracy: .2f}')
+print('Confusion Matrix:\n', conf_matrix)
+print('Classification Report:\n',classification_report_output)
+plt.scatter(x_test,y_test,color='black')
+plt.plot(x_test,logistic_reg.predict_proba(x_test)[:,1],color='blue',linewidth=3)
+plt.xlabel('x')
+plt.ylabel('Probability of Class 1')
+plt.title('Logistic Regression Decision Boundary')
+plt.show()
+
+
+
+
+
+
+
+
+
+Prac 8: Implement K-means clustering algorithm in python using scikit-learn to group customers based on their purchasing behaviour
+
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+data={
+    'CustomerID':[1,2,3,4,5,6,7,8,9,10],
+    'AnnualIncome':[50000,70000,90000,120000,150000,30000,40000,80000,100000,110000],
+    'SpendingScore':[50,75,100,80,60,30,20,70,90,85]
+}
+df = pd.DataFrame(data)
+features = df[['AnnualIncome','SpendingScore']]
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+inertia = []
+for i in range(1,11):
+    kmeans=KMeans(n_clusters=i,random_state=42)
+    kmeans.fit(features_scaled)
+    inertia.append(kmeans.inertia_)
+plt.plot(range(1,11),inertia,marker='o')
+plt.title('Elbow method for optimal k')
+plt.xlabel('Number of clusters')
+plt.ylabel('Inertia')
+plt.show()
+optimal_k=3
+kmeans=KMeans(n_clusters=optimal_k,random_state=42)
+df['Cluster']=kmeans.fit_predict(features_scaled)
+plt.scatter(df['AnnualIncome'],df['SpendingScore'],c=df['Cluster'],cmap='viridis')
+plt.scatter(kmeans.cluster_centers_[:,0],kmeans.cluster_centers_[:,1],s=300,c='red',marker='X',label='Centroids')
+plt.title('Customer Segmentation using K-means Clustering')
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.legend()
+plt.show()
+print(df[['CustomerID','AnnualIncome','SpendingScore','Cluster']])
+
+
+
+
+
+
+
+
+
+Prac 9: Build a decision tree classifier using Python's scikit-learn library to predict customer churn based on historical data
+
+import numpy as np
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+np.random.seed(42)
+x=np.random.rand(100,2)
+y=(x[:,0]+x[:,1]>1).astype(int)
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+dt_model=DecisionTreeClassifier(random_state=42)
+dt_model.fit(x_train,y_train)
+y_pred = dt_model.predict(x_test)
+accuracy = accuracy_score(y_test,y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+tree_rules=export_text(dt_model,feature_names=['Feature_1','Feature_2'])
+print('Decisison Tree Rules:\n', tree_rules)
+
+
+
+
